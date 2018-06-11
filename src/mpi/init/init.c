@@ -4,10 +4,28 @@
  *      See COPYRIGHT in top-level directory.
  */
 
+/*my code*/
+#define _GNU_SOURCE         /* See feature_test_macros(7) */
+/* end my code*/
+
+
 #include <strings.h>
 
 #include "mpiimpl.h"
 #include "mpi_init.h"
+
+/*TIMNDUS CODE_0*/
+
+    #include <stdlib.h>
+    #include "stdio.h"
+    #include <string.h>
+    #include <unistd.h>
+    #include <sched.h>
+    #include <time.h>
+
+    #define LEN 256
+
+/*END OF CODE_0*/
 
 /*
 === BEGIN_MPI_T_CVAR_INFO_BLOCK ===
@@ -192,6 +210,66 @@ int MPI_Init( int *argc, char ***argv )
 
     /* ... end of body of routine ... */
     MPID_MPI_INIT_FUNC_EXIT(MPID_STATE_MPI_INIT);
+
+/*mycode start*/
+
+    int __shared_info = -2;
+    MPI_Comm_rank(MPI_COMM_WORLD, &__WORLD_RANK);
+    MPI_Comm_size(MPI_COMM_WORLD, &__WORLD_SIZE);
+
+    int __TIM_cpu_id = 0;
+    __TIM_cpu_id = sched_getcpu();
+
+    FILE * __fp;
+    __fp = fopen ("/home/timndus/ainfo","a");
+    fprintf(__fp, "%d,%d\n", __WORLD_RANK, __TIM_cpu_id);
+    fclose (__fp);
+
+    for (int i = 0; i < __WORLD_SIZE; i++)
+    {
+        __shared_info = __TIM_cpu_id;
+        MPI_Bcast(&__shared_info, 1, MPI_INT, i, MPI_COMM_WORLD);
+        __SHARED_INFO_ARR[i] = __shared_info;
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
+//////////////////////////////////////////////////////find available freq
+    char __scaling_available_frequencies_dir[100];
+    char __scaling_available_frequencies_str[256];
+
+    sprintf(__scaling_available_frequencies_dir,"%s%d%s", "/sys/devices/system/cpu/cpu", __SHARED_INFO_ARR[__WORLD_RANK], "/cpufreq/scaling_available_frequencies");
+    __fp = fopen(__scaling_available_frequencies_dir, "r");
+    if( fgets(__scaling_available_frequencies_str, 256, __fp) == NULL )
+    {
+        printf("error in read!");
+    }
+    fclose(__fp);
+
+    char *__char_pt;
+    int __i = 0;
+    __char_pt = strtok (__scaling_available_frequencies_str," ");
+    while (__char_pt != NULL)
+    {
+        sscanf(__char_pt, "%d", &__SCALING_AVAILABLE_FREQUENCYIES_ARR[__i]);
+        __char_pt = strtok (NULL, " ");
+        __i++;
+    }
+/////////////////////////////////////////////////////find donation quota
+    char __cpuinfo_cur_freq_dir[60];
+    char __cpuinfo_cur_freq_str[8];
+    int __cpuinfo_cur_freq = 0;
+
+    sprintf(__cpuinfo_cur_freq_dir,"%s%d%s", "/sys/devices/system/cpu/cpu", __SHARED_INFO_ARR[__WORLD_RANK], "/cpufreq/cpuinfo_cur_freq");
+    __fp = fopen(__cpuinfo_cur_freq_dir, "r");
+    if( fgets(__cpuinfo_cur_freq_str, 8, __fp) == NULL )
+    {
+        printf("error in read!");
+    }
+    fclose(__fp);
+    sscanf(__cpuinfo_cur_freq_str, "%d", &__cpuinfo_cur_freq);
+    __DONATION_QUOTA = __cpuinfo_cur_freq - __SCALING_AVAILABLE_FREQUENCYIES_ARR[__i - 2];
+
+/*mycode end*/
+
     return mpi_errno;
 
   fn_fail:

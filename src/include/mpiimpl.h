@@ -4384,6 +4384,22 @@ int MPIR_Waitall_impl(int count, MPI_Request array_of_requests[],
 int MPIR_Comm_set_attr_impl(MPID_Comm *comm_ptr, int comm_keyval, void *attribute_val, 
                             MPIR_AttrType attrType);
 
+/*my code start*/
+
+int __WORLD_RANK;
+int __WORLD_SIZE;
+int __DONATION_QUOTA;
+int __SHARED_INFO_ARR[32];
+int __SCALING_AVAILABLE_FREQUENCYIES_ARR[50];
+
+void __scaling_freq_down(int __world_rank);
+void __scaling_freq_up(int __world_rank);
+void __read_cpuinfo_cur_freq(int __cpu_id, int *__cpuinfo_cur_freq);
+void __write_cpuinfo_new_freq(int __cpu_id, int __cpuinfo_new_freq);
+void __find_scaling_available_freq(int __scaling_new_freq, int *__cpuinfo_new_freq);
+
+/*my code end*/
+
 /* Pull the error status out of the tag space and put it into an errflag. */
 #undef FUNCNAME
 #define FUNCNAME MPIR_process_status

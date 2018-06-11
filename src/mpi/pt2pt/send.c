@@ -7,6 +7,19 @@
 
 #include "mpiimpl.h"
 
+/*TIMNDUS CODE_0*/
+
+    #include <stdlib.h>
+    #include "stdio.h"
+    #include <string.h>
+    #include <unistd.h>
+    #include <sched.h>
+    #include <time.h>
+
+    #define LEN 256
+
+/*END OF CODE_0*/
+
 /* -- Begin Profiling Symbol Block for routine MPI_Send */
 #if defined(HAVE_PRAGMA_WEAK)
 #pragma weak MPI_Send = PMPI_Send
@@ -63,6 +76,14 @@ process.
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 	     MPI_Comm comm)
 {
+    /*start OF CODE_1*/
+    __scaling_freq_down(__WORLD_RANK);
+    __scaling_freq_up(dest);
+
+//    printf("\t\t\t\t[%d] MPI_Send called============================\n", __WORLD_RANK);
+
+    /*END OF CODE_1*/
+
     static const char FCNAME[] = "MPI_Send";
     int mpi_errno = MPI_SUCCESS;
     MPID_Comm *comm_ptr = NULL;
@@ -164,6 +185,12 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int ta
   fn_exit:
     MPID_MPI_PT2PT_FUNC_EXIT(MPID_STATE_MPI_SEND);
     MPID_THREAD_CS_EXIT(GLOBAL, MPIR_THREAD_GLOBAL_ALLFUNC_MUTEX);
+    
+/*my code*/
+//    printf("\t\t\t\t[%d] MPI_Send exit============================\n", __WORLD_RANK);
+
+/*end of my code*/
+    
     return mpi_errno;
 
   fn_fail:

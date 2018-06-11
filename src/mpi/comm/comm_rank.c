@@ -31,6 +31,97 @@ int MPI_Comm_rank(MPI_Comm comm, int *rank) __attribute__((weak,alias("PMPI_Comm
 #undef FCNAME
 #define FCNAME MPL_QUOTE(FUNCNAME)
 
+/*mycode start*/
+void __scaling_freq_down(int __world_rank)
+{
+    int __cpuinfo_cur_freq;
+    __read_cpuinfo_cur_freq(__SHARED_INFO_ARR[__world_rank], &__cpuinfo_cur_freq);
+    printf("cpu [%d] report, read [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_cur_freq);
+    
+    int __scaling_new_freq;
+    int __cpuinfo_new_freq;
+
+    printf("cpu [%d] report, __DONATION_QUOTA is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __DONATION_QUOTA);
+
+    __scaling_new_freq = __cpuinfo_cur_freq - __DONATION_QUOTA;
+    printf("cpu [%d] report, after_down [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __scaling_new_freq);
+
+    __find_scaling_available_freq(__scaling_new_freq, &__cpuinfo_new_freq);
+    printf("cpu [%d] report, write [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
+   
+    __write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
+}
+
+void __scaling_freq_up(int __world_rank)
+{
+    int __cpuinfo_cur_freq;
+    __read_cpuinfo_cur_freq(__SHARED_INFO_ARR[__world_rank], &__cpuinfo_cur_freq);
+    printf("cpu [%d] report, read [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_cur_freq);
+    
+    int __scaling_new_freq;
+    int __cpuinfo_new_freq;
+    __scaling_new_freq = __cpuinfo_cur_freq + __DONATION_QUOTA;
+    printf("cpu [%d] report, after_up [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __scaling_new_freq);
+
+    __find_scaling_available_freq(__scaling_new_freq, &__cpuinfo_new_freq);
+    printf("cpu [%d] report, write [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
+   
+    __write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
+}
+
+void __read_cpuinfo_cur_freq(int __cpu_id, int *__cpuinfo_cur_freq)
+{
+    FILE * __fp;
+    char __cpuinfo_cur_freq_dir[60];
+    char __cpuinfo_cur_freq_str[8];
+
+    sprintf(__cpuinfo_cur_freq_dir,"%s%d%s", "/sys/devices/system/cpu/cpu", __cpu_id, "/cpufreq/cpuinfo_cur_freq");
+    __fp = fopen(__cpuinfo_cur_freq_dir, "r");
+    if( fgets(__cpuinfo_cur_freq_str, 8, __fp) == NULL )
+    {
+        printf("error in read!");
+    }
+    fclose(__fp);
+    sscanf(__cpuinfo_cur_freq_str, "%d", __cpuinfo_cur_freq);
+}
+
+void __write_cpuinfo_new_freq(int __cpu_id, int __cpuinfo_new_freq)
+{
+    FILE * __fp;
+    char __scaling_setspeed_dir[60];
+
+    sprintf(__scaling_setspeed_dir,"%s%d%s", "/sys/devices/system/cpu/cpu", __cpu_id, "/cpufreq/scaling_setspeed");
+    __fp = fopen (__scaling_setspeed_dir,"w");
+    fprintf(__fp, "%d", __cpuinfo_new_freq);
+    fclose (__fp);
+}
+
+void __find_scaling_available_freq(int __scaling_new_freq, int *__cpuinfo_new_freq)
+{
+    int __i = 0;
+    while(__SCALING_AVAILABLE_FREQUENCYIES_ARR[__i] > __scaling_new_freq)
+    {
+        __i++;
+    }
+    if(__SCALING_AVAILABLE_FREQUENCYIES_ARR[__i] < __scaling_new_freq)
+    {
+        if((__scaling_new_freq - __SCALING_AVAILABLE_FREQUENCYIES_ARR[__i]) < (__SCALING_AVAILABLE_FREQUENCYIES_ARR[__i - 1] - __scaling_new_freq) )
+        {
+            *__cpuinfo_new_freq = __SCALING_AVAILABLE_FREQUENCYIES_ARR[__i];
+        }
+        else
+        {
+            *__cpuinfo_new_freq = __SCALING_AVAILABLE_FREQUENCYIES_ARR[__i - 1];
+        }
+    }
+    else
+    {
+        *__cpuinfo_new_freq = __scaling_new_freq;
+    }
+}
+
+/* mycod eend */
+
 /*@
 
 MPI_Comm_rank - Determines the rank of the calling process in the communicator

@@ -7,6 +7,19 @@
 
 #include "mpiimpl.h"
 
+/*TIMNDUS CODE_0*/
+
+    #include <stdlib.h>
+    #include "stdio.h"
+    #include <string.h>
+    #include <unistd.h>
+    #include <sched.h>
+    #include <time.h>
+
+    #define LEN 256
+
+/*END OF CODE_0*/
+
 /* -- Begin Profiling Symbol Block for routine MPI_Recv */
 #if defined(HAVE_PRAGMA_WEAK)
 #pragma weak MPI_Recv = PMPI_Recv
@@ -64,9 +77,18 @@ length of the message can be determined with 'MPI_Get_count'.
 .N MPI_ERR_RANK
 
 @*/
+
 int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag,
 	     MPI_Comm comm, MPI_Status *status)
 {
+    /*start OF CODE_1*/
+
+    __scaling_freq_down(__WORLD_RANK);
+    __scaling_freq_up(source);
+        
+//    printf("\t\t\t\t[%d] MPI_Recv called============================\n", __WORLD_RANK);
+    /*END OF CODE_1*/
+
     static const char FCNAME[] = "MPI_Recv";
     int mpi_errno = MPI_SUCCESS;
     MPID_Comm *comm_ptr = NULL;
@@ -190,6 +212,10 @@ int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag,
   fn_exit:
     MPID_MPI_PT2PT_FUNC_EXIT_BACK(MPID_STATE_MPI_RECV);
     MPID_THREAD_CS_EXIT(GLOBAL, MPIR_THREAD_GLOBAL_ALLFUNC_MUTEX);
+    /*start my code*/
+//    printf("\t\t\t[%d] MPI_Recv exit============================\n", __WORLD_RANK);
+
+    /*stop my code*/
     return mpi_errno;
 
   fn_fail:
