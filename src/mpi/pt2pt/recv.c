@@ -81,13 +81,13 @@ length of the message can be determined with 'MPI_Get_count'.
 int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag,
 	     MPI_Comm comm, MPI_Status *status)
 {
-    /*start OF CODE_1*/
+    /*timndus start*/
 
     __scaling_freq_down(__WORLD_RANK);
     __scaling_freq_up(source);
         
 //    printf("\t\t\t\t[%d] MPI_Recv called============================\n", __WORLD_RANK);
-    /*END OF CODE_1*/
+    /*timndus end*/
 
     static const char FCNAME[] = "MPI_Recv";
     int mpi_errno = MPI_SUCCESS;
@@ -212,10 +212,10 @@ int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag,
   fn_exit:
     MPID_MPI_PT2PT_FUNC_EXIT_BACK(MPID_STATE_MPI_RECV);
     MPID_THREAD_CS_EXIT(GLOBAL, MPIR_THREAD_GLOBAL_ALLFUNC_MUTEX);
-    /*start my code*/
+    /*timndus start*/
 //    printf("\t\t\t[%d] MPI_Recv exit============================\n", __WORLD_RANK);
 
-    /*stop my code*/
+    /*timndus end*/
     return mpi_errno;
 
   fn_fail:

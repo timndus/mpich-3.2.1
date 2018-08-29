@@ -76,13 +76,13 @@ process.
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 	     MPI_Comm comm)
 {
-    /*start OF CODE_1*/
+    /*timndus start*/
     __scaling_freq_down(__WORLD_RANK);
     __scaling_freq_up(dest);
 
 //    printf("\t\t\t\t[%d] MPI_Send called============================\n", __WORLD_RANK);
 
-    /*END OF CODE_1*/
+    /*timndus end*/
 
     static const char FCNAME[] = "MPI_Send";
     int mpi_errno = MPI_SUCCESS;
@@ -186,10 +186,10 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int ta
     MPID_MPI_PT2PT_FUNC_EXIT(MPID_STATE_MPI_SEND);
     MPID_THREAD_CS_EXIT(GLOBAL, MPIR_THREAD_GLOBAL_ALLFUNC_MUTEX);
     
-/*my code*/
+/*timndus start*/
 //    printf("\t\t\t\t[%d] MPI_Send exit============================\n", __WORLD_RANK);
 
-/*end of my code*/
+/*timndus end*/
     
     return mpi_errno;
 

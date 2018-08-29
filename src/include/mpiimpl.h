@@ -4384,7 +4384,7 @@ int MPIR_Waitall_impl(int count, MPI_Request array_of_requests[],
 int MPIR_Comm_set_attr_impl(MPID_Comm *comm_ptr, int comm_keyval, void *attribute_val, 
                             MPIR_AttrType attrType);
 
-/*my code start*/
+/*timndus start*/
 
 int __WORLD_RANK;
 int __WORLD_SIZE;
@@ -4398,7 +4398,7 @@ void __read_cpuinfo_cur_freq(int __cpu_id, int *__cpuinfo_cur_freq);
 void __write_cpuinfo_new_freq(int __cpu_id, int __cpuinfo_new_freq);
 void __find_scaling_available_freq(int __scaling_new_freq, int *__cpuinfo_new_freq);
 
-/*my code end*/
+/*timndus end*/
 
 /* Pull the error status out of the tag space and put it into an errflag. */
 #undef FUNCNAME

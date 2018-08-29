@@ -211,7 +211,7 @@ int MPI_Init( int *argc, char ***argv )
     /* ... end of body of routine ... */
     MPID_MPI_INIT_FUNC_EXIT(MPID_STATE_MPI_INIT);
 
-/*mycode start*/
+/*timndus start*/
 
     int __shared_info = -2;
     MPI_Comm_rank(MPI_COMM_WORLD, &__WORLD_RANK);
@@ -221,10 +221,11 @@ int MPI_Init( int *argc, char ***argv )
     __TIM_cpu_id = sched_getcpu();
 
     FILE * __fp;
+    /*
     __fp = fopen ("/home/timndus/ainfo","a");
     fprintf(__fp, "%d,%d\n", __WORLD_RANK, __TIM_cpu_id);
     fclose (__fp);
-
+    */
     for (int i = 0; i < __WORLD_SIZE; i++)
     {
         __shared_info = __TIM_cpu_id;
@@ -268,7 +269,7 @@ int MPI_Init( int *argc, char ***argv )
     sscanf(__cpuinfo_cur_freq_str, "%d", &__cpuinfo_cur_freq);
     __DONATION_QUOTA = __cpuinfo_cur_freq - __SCALING_AVAILABLE_FREQUENCYIES_ARR[__i - 2];
 
-/*mycode end*/
+/*timndus end*/
 
     return mpi_errno;
 

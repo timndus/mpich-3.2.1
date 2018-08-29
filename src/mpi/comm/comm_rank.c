@@ -31,23 +31,23 @@ int MPI_Comm_rank(MPI_Comm comm, int *rank) __attribute__((weak,alias("PMPI_Comm
 #undef FCNAME
 #define FCNAME MPL_QUOTE(FUNCNAME)
 
-/*mycode start*/
+/*timndus start*/
 void __scaling_freq_down(int __world_rank)
 {
     int __cpuinfo_cur_freq;
     __read_cpuinfo_cur_freq(__SHARED_INFO_ARR[__world_rank], &__cpuinfo_cur_freq);
-    printf("cpu [%d] report, read [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_cur_freq);
+    //printf("cpu [%d] report, read [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_cur_freq);
     
     int __scaling_new_freq;
     int __cpuinfo_new_freq;
 
-    printf("cpu [%d] report, __DONATION_QUOTA is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __DONATION_QUOTA);
+    //printf("cpu [%d] report, __DONATION_QUOTA is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __DONATION_QUOTA);
 
     __scaling_new_freq = __cpuinfo_cur_freq - __DONATION_QUOTA;
-    printf("cpu [%d] report, after_down [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __scaling_new_freq);
+    //printf("cpu [%d] report, after_down [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __scaling_new_freq);
 
     __find_scaling_available_freq(__scaling_new_freq, &__cpuinfo_new_freq);
-    printf("cpu [%d] report, write [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
+    //printf("cpu [%d] report, write [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
    
     __write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
 }
@@ -56,15 +56,15 @@ void __scaling_freq_up(int __world_rank)
 {
     int __cpuinfo_cur_freq;
     __read_cpuinfo_cur_freq(__SHARED_INFO_ARR[__world_rank], &__cpuinfo_cur_freq);
-    printf("cpu [%d] report, read [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_cur_freq);
+    //printf("cpu [%d] report, read [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_cur_freq);
     
     int __scaling_new_freq;
     int __cpuinfo_new_freq;
     __scaling_new_freq = __cpuinfo_cur_freq + __DONATION_QUOTA;
-    printf("cpu [%d] report, after_up [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __scaling_new_freq);
+    //printf("cpu [%d] report, after_up [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __scaling_new_freq);
 
     __find_scaling_available_freq(__scaling_new_freq, &__cpuinfo_new_freq);
-    printf("cpu [%d] report, write [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
+    //printf("cpu [%d] report, write [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
    
     __write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
 }
@@ -120,7 +120,7 @@ void __find_scaling_available_freq(int __scaling_new_freq, int *__cpuinfo_new_fr
     }
 }
 
-/* mycod eend */
+/* timndus end */
 
 /*@
 
