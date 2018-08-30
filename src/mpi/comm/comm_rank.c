@@ -50,7 +50,14 @@ void __scaling_freq_down(int __world_rank)
     //printf("cpu [%d] report, write [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
    
     //__write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
-    __write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], 1700000);
+    if(__cpuinfo_cur_freq == 1700000)
+    {
+        __write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], 1200000);
+    }
+    else
+    {
+        __write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], 1700000);
+    }
 }
 
 void __scaling_freq_up(int __world_rank)
@@ -71,7 +78,14 @@ void __scaling_freq_up(int __world_rank)
     //printf("cpu [%d] report, write [%d] is: [%d]\n", __SHARED_INFO_ARR[__world_rank], __SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
    
     //__write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], __cpuinfo_new_freq);
-    __write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], 3300000);
+    if(__cpuinfo_cur_freq == 1200000)
+    {
+        __write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], 1700000);
+    }
+    else
+    {
+        __write_cpuinfo_new_freq(__SHARED_INFO_ARR[__world_rank], 3300000);
+    }
 }
 
 void __read_cpuinfo_cur_freq(int __cpu_id, int *__cpuinfo_cur_freq)
