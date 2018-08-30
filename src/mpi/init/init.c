@@ -267,7 +267,8 @@ int MPI_Init( int *argc, char ***argv )
     }
     fclose(__fp);
     sscanf(__cpuinfo_cur_freq_str, "%d", &__cpuinfo_cur_freq);
-    __DONATION_QUOTA = __cpuinfo_cur_freq - __SCALING_AVAILABLE_FREQUENCYIES_ARR[__i - 2];
+    //__DONATION_QUOTA = __cpuinfo_cur_freq - __SCALING_AVAILABLE_FREQUENCYIES_ARR[__i - 2];
+    __DONATION_QUOTA = __cpuinfo_cur_freq;
 
 /*timndus end*/
 
